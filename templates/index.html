@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <title>Lunar 3D Visualization | Team Liquid</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        ul { line-height: 1.7; }
+        img { max-width: 100%; border: 1px solid #ccc; margin-top: 20px; }
+        .team { margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <h1>Team Liquid</h1>
+    <div class="team">
+        <ul>
+            <li>Abhinab Chhetri (<code>achheri_be23@thapar.edu</code>)</li>
+            <li>Kanav Bahri (<code>kanavbahri2004@gmail.com</code>)</li>
+            <li>Lakshita Agarawal (<code>laggarwal_be23@thapar.edu</code>)</li>
+            <li>Kartik Jain (<code>kjain_be24@thapar.edu</code>)</li>
+        </ul>
+    </div>
+    <h2>Upload a lunar grayscale image</h2>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+    {% if plot_url %}
+      <h3>Results:</h3>
+      <img src="{{ plot_url }}">
+    {% endif %}
+</body>
+</html>
