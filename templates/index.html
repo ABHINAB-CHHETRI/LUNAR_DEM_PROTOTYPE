@@ -1,32 +1,119 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Lunar 3D Visualization | Team Liquid</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Google Fonts for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 30px; }
-        ul { line-height: 1.7; }
-        img { max-width: 100%; border: 1px solid #ccc; margin-top: 20px; }
-        .team { margin-bottom: 30px; }
+        body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            background: linear-gradient(120deg, #232526, #414345 100%);
+            color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto 0 auto;
+            background: rgba(30, 30, 40, 0.97);
+            border-radius: 18px;
+            box-shadow: 0 6px 32px rgba(0,0,0,0.25);
+            padding: 32px 32px 24px 32px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.6rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            color: #4fc3f7;
+            text-shadow: 0 2px 8px #0008;
+        }
+        .team-list {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 24px;
+            font-size: 1.1rem;
+        }
+        .team-list li {
+            margin-bottom: 8px;
+        }
+        .team-list code {
+            color: #ffd54f;
+            background: none;
+            font-size: 1em;
+        }
+        .upload-section {
+            background: #292b36;
+            padding: 24px 18px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px #0003;
+        }
+        .upload-section h2 {
+            margin-top: 0;
+            color: #fff176;
+            font-size: 1.4rem;
+        }
+        .upload-section input[type="file"] {
+            margin: 12px 0;
+            color: #333;
+        }
+        .upload-section input[type="submit"] {
+            background: #4fc3f7;
+            color: #232526;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 22px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .upload-section input[type="submit"]:hover {
+            background: #039be5;
+            color: #fff;
+        }
+        .results {
+            margin-top: 28px;
+            text-align: center;
+        }
+        .results img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 2px 16px #0005;
+            margin-top: 10px;
+        }
+        @media (max-width: 800px) {
+            .container { padding: 18px 6px; }
+        }
     </style>
 </head>
 <body>
-    <h1>Team Liquid</h1>
-    <div class="team">
-        <ul>
+    <div class="container">
+        <h1>Team Liquid</h1>
+        <ul class="team-list">
             <li>Abhinab Chhetri (<code>achheri_be23@thapar.edu</code>)</li>
             <li>Kanav Bahri (<code>kanavbahri2004@gmail.com</code>)</li>
             <li>Lakshita Agarawal (<code>laggarwal_be23@thapar.edu</code>)</li>
             <li>Kartik Jain (<code>kjain_be24@thapar.edu</code>)</li>
         </ul>
+        <div class="upload-section">
+            <h2>Upload a lunar grayscale image</h2>
+            <form method="post" enctype="multipart/form-data">
+                <input type="file" name="file" required>
+                <input type="submit" value="Upload & Visualize">
+            </form>
+        </div>
+        {% if plot_url %}
+        <div class="results">
+            <h3>Results:</h3>
+            <img src="{{ plot_url }}" alt="Lunar Visualization">
+        </div>
+        {% endif %}
     </div>
-    <h2>Upload a lunar grayscale image</h2>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
-    {% if plot_url %}
-      <h3>Results:</h3>
-      <img src="{{ plot_url }}">
-    {% endif %}
 </body>
 </html>
+
