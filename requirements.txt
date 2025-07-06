@@ -1,0 +1,5 @@
+flask
+numpy
+opencv-python
+scipy
+matplotlib
