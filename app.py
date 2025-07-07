@@ -77,10 +77,20 @@ def process_and_plot(img_path, out_path):
     plt.tight_layout()
     plt.savefig(out_path, bbox_inches='tight')
     plt.close()
+    return elevation  # Return elevation for comparison
+
+def dummy_compare_dem(elevation):
+    # Dummy: create a fake reference DEM with small random noise
+    np.random.seed(42)
+    reference_dem = elevation + np.random.normal(0, 0.05, elevation.shape)
+    # Calculate RMSE
+    rmse = np.sqrt(np.mean((elevation - reference_dem) ** 2))
+    return rmse
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     plot_url = None
+    rmse = None
     if request.method == 'POST':
         file = request.files['file']
         if file and file.filename:
@@ -88,9 +98,11 @@ def index():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             out_path = os.path.join('static', 'plot.png')
-            process_and_plot(filepath, out_path)
+            elevation = process_and_plot(filepath, out_path)
+            # Call dummy DEM comparison
+            rmse = dummy_compare_dem(elevation)
             plot_url = url_for('static', filename='plot.png')
-    return render_template('index.html', plot_url=plot_url)
+    return render_template('index.html', plot_url=plot_url, rmse=rmse)
 
 if __name__ == '__main__':
     app.run(debug=True)
