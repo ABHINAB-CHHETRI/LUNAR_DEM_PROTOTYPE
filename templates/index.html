@@ -2,115 +2,177 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lunar 3D Visualization | Team Liquid</title>
+    <title>Lunar DEM Generator | Team Liquid</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Google Fonts for a modern look -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&display=swap" rel="stylesheet">
+    <!-- Google Fonts for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Montserrat', Arial, sans-serif;
-            background: linear-gradient(120deg, #232526, #414345 100%);
+            background: linear-gradient(135deg, #181c22 0%, #232526 60%, #4fc3f7 100%);
             color: #f4f4f4;
             margin: 0;
             padding: 0;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .header {
+            width: 100vw;
+            min-height: 38vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(120deg, #232526 60%, #4fc3f7 120%);
+            border-bottom-left-radius: 48px 32px;
+            border-bottom-right-radius: 48px 32px;
+            box-shadow: 0 8px 32px #0006;
+        }
+        .header h1 {
+            font-family: 'Orbitron', 'Montserrat', Arial, sans-serif;
+            font-size: 2.8rem;
+            margin-bottom: 0.2em;
+            color: #fff176;
+            text-shadow: 0 4px 24px #000a;
+        }
+        .header p {
+            font-size: 1.3rem;
+            color: #b3e5fc;
+            margin-top: 0;
+            letter-spacing: 1px;
         }
         .container {
             max-width: 700px;
             margin: 40px auto 0 auto;
-            background: rgba(30, 30, 40, 0.97);
-            border-radius: 18px;
+            background: rgba(30, 30, 40, 0.92);
+            border-radius: 24px;
             box-shadow: 0 6px 32px rgba(0,0,0,0.25);
             padding: 32px 32px 24px 32px;
-        }
-        h1 {
-            text-align: center;
-            font-size: 2.6rem;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-            color: #4fc3f7;
-            text-shadow: 0 2px 8px #0008;
-        }
-        .team-list {
-            list-style: none;
-            padding-left: 0;
-            margin-bottom: 24px;
-            font-size: 1.1rem;
-        }
-        .team-list li {
-            margin-bottom: 8px;
-        }
-        .team-list code {
-            color: #ffd54f;
-            background: none;
-            font-size: 1em;
+            position: relative;
+            top: -40px;
         }
         .upload-section {
-            background: #292b36;
-            padding: 24px 18px;
-            border-radius: 10px;
+            background: rgba(50, 60, 80, 0.95);
+            padding: 24px 18px 20px 18px;
+            border-radius: 16px;
             margin-bottom: 24px;
-            box-shadow: 0 2px 8px #0003;
+            box-shadow: 0 2px 12px #0003;
+            text-align: center;
         }
         .upload-section h2 {
             margin-top: 0;
-            color: #fff176;
-            font-size: 1.4rem;
+            color: #4fc3f7;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .default-image {
+            display: block;
+            margin: 0 auto 14px auto;
+            max-width: 220px;
+            border-radius: 16px;
+            box-shadow: 0 2px 16px #0006;
+            transition: transform 0.3s;
+        }
+        .default-image:hover {
+            transform: scale(1.04) rotate(-2deg);
+        }
+        .or-divider {
+            margin: 12px 0 8px 0;
+            color: #b3e5fc;
+            font-size: 1.1em;
+            position: relative;
+        }
+        .or-divider:before,
+        .or-divider:after {
+            content: "";
+            display: inline-block;
+            width: 30%;
+            height: 1px;
+            background: #4fc3f7;
+            vertical-align: middle;
+            margin: 0 10px;
+            opacity: 0.4;
         }
         .upload-section input[type="file"] {
             margin: 12px 0;
             color: #333;
+            background: #fff;
+            border-radius: 6px;
+            padding: 6px;
+            font-size: 1em;
+            border: none;
         }
         .upload-section input[type="submit"] {
-            background: #4fc3f7;
+            background: linear-gradient(90deg, #4fc3f7 40%, #fff176 100%);
             color: #232526;
             font-weight: bold;
             border: none;
-            border-radius: 6px;
-            padding: 8px 22px;
-            font-size: 1.1em;
+            border-radius: 8px;
+            padding: 10px 30px;
+            font-size: 1.15em;
             cursor: pointer;
-            transition: background 0.2s;
+            margin-top: 10px;
+            margin-bottom: 0;
+            box-shadow: 0 2px 12px #0002;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
         }
         .upload-section input[type="submit"]:hover {
-            background: #039be5;
-            color: #fff;
+            background: linear-gradient(90deg, #fff176 30%, #4fc3f7 100%);
+            color: #181c22;
+            transform: translateY(-2px) scale(1.04);
         }
         .results {
-            margin-top: 28px;
+            margin-top: 32px;
             text-align: center;
         }
         .results img {
             max-width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 2px 16px #0005;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px #0008;
             margin-top: 10px;
+            animation: fadeIn 1.2s;
         }
         .rmse-metric {
             color: #fff176;
-            font-size: 1.1rem;
-            margin-top: 16px;
+            font-size: 1.15rem;
+            margin-top: 18px;
             margin-bottom: 0;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98);}
+            to { opacity: 1; transform: scale(1);}
+        }
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            font-size: 1.1em;
+            color: #b3e5fc;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            font-family: 'Orbitron', 'Montserrat', Arial, sans-serif;
         }
         @media (max-width: 800px) {
             .container { padding: 18px 6px; }
+            .header h1 { font-size: 2rem;}
         }
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>Lunar DEM Generator</h1>
+        <p>Create stunning 3D lunar terrain from a single image—instantly.</p>
+    </div>
     <div class="container">
-        <h1>Team Liquid</h1>
-        <ul class="team-list">
-            <li>Abhinab Chhetri (<code>achheri_be23@thapar.edu</code>)</li>
-            <li>Kanav Bahri (<code>kanavbahri2004@gmail.com</code>)</li>
-            <li>Lakshita Agarawal (<code>laggarwal_be23@thapar.edu</code>)</li>
-            <li>Kartik Jain (<code>kjain_be24@thapar.edu</code>)</li>
-        </ul>
         <div class="upload-section">
-            <h2>Upload a lunar grayscale image</h2>
+            <h2>Generate a Digital Elevation Model (DEM) from a Lunar Image</h2>
             <form method="post" enctype="multipart/form-data">
-                <input type="file" name="file" required>
-                <input type="submit" value="Upload & Visualize">
+                <img src="{{ url_for('static', filename='default_lunar.jpg') }}" alt="Default Lunar" class="default-image">
+                <div class="or-divider">Use the default image above or upload your own</div>
+                <input type="file" name="file" accept="image/*">
+                <input type="submit" value="Generate DEM">
             </form>
         </div>
         {% if plot_url %}
@@ -122,6 +184,9 @@
             {% endif %}
         </div>
         {% endif %}
+    </div>
+    <div class="footer">
+        Team Liquid &mdash; 2025
     </div>
 </body>
 </html>
