@@ -1,115 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Lunar DEM Generator</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&display=swap" rel="stylesheet" />
     <style>
+        :root {
+            --bg-color: #1B263B;
+            --card-bg: #324A5F;
+            --text-primary: #E0E6F0;
+            --text-secondary: #A3B1C6;
+            --btn-bg: #52796F;
+            --btn-hover-bg: #84A98C;
+            --accent-color: #F4D35E;
+        }
         body {
-            font-family: 'Montserrat', Arial, sans-serif;
-            background: #f6f6f9;
-            color: #333;
             margin: 0;
             padding: 0;
+            font-family: 'Montserrat', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
             min-height: 100vh;
         }
         .header {
             text-align: center;
-            padding: 18px 0 8px 0;
-            background: #e3e8f0;
+            padding: 28px 0 12px 0;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
         }
         .header h1 {
-            font-size: 2.2rem;
             margin: 0;
+            font-size: 2.4rem;
             letter-spacing: 2px;
-            color: #6d9dc5;
+            color: var(--accent-color);
         }
         .header .team {
-            font-size: 2rem; /* Bigger Team Liquid */
-            color: #b8bedd;
             margin-top: 8px;
-            letter-spacing: 1px;
+            font-size: 2rem;
             font-weight: 700;
+            color: var(--btn-hover-bg);
+            letter-spacing: 1.5px;
         }
         .container {
             max-width: 700px;
-            margin: 32px auto 0 auto;
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 4px 16px #e3e8f0;
-            padding: 32px 32px 24px 32px;
+            margin: 36px auto;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 36px 36px 28px 36px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.7);
         }
         .upload-section {
-            background: #f2e9e1;
-            padding: 24px 18px 32px 18px;
-            border-radius: 10px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 8px #e3e8f0;
+            background-color: var(--bg-color);
+            padding: 28px 22px 36px 22px;
+            border-radius: 14px;
+            margin-bottom: 32px;
             text-align: center;
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
         }
         .upload-section h2 {
             margin-top: 0;
-            color: #8eb8e5;
-            font-size: 1.35rem;
+            color: var(--btn-bg);
+            font-size: 1.5rem;
+            font-weight: 700;
         }
         .default-image {
             display: block;
-            margin: 0 auto 14px auto;
+            margin: 0 auto 18px auto;
             max-width: 220px;
-            border-radius: 8px;
-            box-shadow: 0 2px 12px #e3e8f0;
-            border: 2px solid #e3e8f0;
+            border-radius: 12px;
+            box-shadow: 0 2px 14px rgba(0,0,0,0.6);
+            border: 2px solid var(--btn-bg);
         }
         .button-row {
             display: flex;
-            gap: 24px;
-            margin: 32px 0 0 0;
+            gap: 28px;
+            margin-top: 36px;
             justify-content: center;
         }
         .big-btn {
             flex: 1;
-            padding: 22px 0;
+            padding: 24px 0;
             font-size: 1.3em;
-            background: #c6e2e9;
-            color: #325288;
+            background-color: var(--btn-bg);
+            color: var(--text-primary);
             border: none;
             border-radius: 16px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 2px 12px #e3e8f0;
-            transition: background 0.2s, color 0.2s, transform 0.2s;
+            box-shadow: 0 3px 14px rgba(0,0,0,0.7);
+            transition: background-color 0.3s ease, transform 0.2s ease;
             letter-spacing: 1px;
             min-width: 180px;
         }
-        .big-btn:hover {
-            background: #b8bedd;
-            color: #222;
-            transform: scale(1.04);
+        .big-btn:hover, .big-btn:focus {
+            background-color: var(--btn-hover-bg);
+            color: var(--bg-color);
+            transform: scale(1.05);
+            outline: none;
         }
         .file-input {
             display: none;
         }
         .results {
-            margin-top: 28px;
+            margin-top: 36px;
             text-align: center;
         }
         .results img {
             max-width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 2px 12px #e3e8f0;
-            margin-top: 10px;
-            background: #f6f6f9;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.8);
+            margin-top: 14px;
+            background-color: var(--bg-color);
         }
         .rmse-metric {
-            color: #6d9dc5;
-            font-size: 1.1rem;
-            margin-top: 16px;
-            margin-bottom: 0;
+            color: var(--btn-hover-bg);
+            font-size: 1.2rem;
+            margin-top: 20px;
+            font-weight: 700;
         }
         @media (max-width: 700px) {
-            .container { padding: 18px 6px; }
-            .button-row { flex-direction: column; gap: 16px; }
+            .container { padding: 24px 12px; }
+            .button-row { flex-direction: column; gap: 20px; }
             .big-btn { width: 100%; }
         }
     </style>
@@ -122,22 +134,22 @@
     <div class="container">
         <div class="upload-section">
             <h2>Generate a Digital Elevation Model (DEM) from a Lunar Image</h2>
-            <img src="{{ url_for('static', filename='default_lunar.jpg') }}" alt="Default Lunar" class="default-image">
+            <img src="{{ url_for('static', filename='default_lunar.jpg') }}" alt="Default Lunar" class="default-image" />
             <form method="post" enctype="multipart/form-data" id="demForm">
                 <div class="button-row">
                     <button type="button" class="big-btn" onclick="useDefault()">Use Default Image</button>
                     <label class="big-btn" for="file-upload" style="margin-bottom:0;">
                         Upload Image
-                        <input id="file-upload" class="file-input" type="file" name="file" accept="image/*" onchange="uploadImage()">
+                        <input id="file-upload" class="file-input" type="file" name="file" accept="image/*" onchange="uploadImage()" />
                     </label>
                 </div>
-                <input type="hidden" name="use_default" id="use_default" value="">
+                <input type="hidden" name="use_default" id="use_default" value="" />
             </form>
         </div>
         {% if plot_url %}
         <div class="results">
             <h3>DEM Output</h3>
-            <img src="{{ plot_url }}" alt="Lunar DEM Visualization">
+            <img src="{{ plot_url }}" alt="Lunar DEM Visualization" />
             {% if rmse is not none %}
                 <p class="rmse-metric">RMSE compared to reference DEM: <b>{{ rmse|round(4) }}</b></p>
             {% endif %}
