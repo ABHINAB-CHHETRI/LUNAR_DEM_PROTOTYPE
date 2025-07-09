@@ -3,8 +3,6 @@ import numpy as np
 import cv2
 from scipy.ndimage import gaussian_filter
 import numpy.fft as fft
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from flask import Flask, render_template, request, url_for
 from werkzeug.utils import secure_filename
 
@@ -24,6 +22,11 @@ def frankot_chellappa(p, q):
     return fft.ifft2(Z).real
 
 def process_and_plot(img_path, out_path):
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
+
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     img = img.astype(np.float32) / 255.0
 
@@ -45,45 +48,33 @@ def process_and_plot(img_path, out_path):
     disparity = np.sqrt(gx_s**2 + gy_s**2)
     elevation = frankot_chellappa(-gx_s, -gy_s)
 
-    plt.figure(figsize=(18, 8))
-    plt.subplot(2, 3, 1)
-    plt.title("Original Lunar Image")
-    plt.imshow(img, cmap="gray")
-    plt.axis("off")
-
-    plt.subplot(2, 3, 2)
+    # Only show DEM-related outputs (no original image)
+    plt.figure(figsize=(14, 6))
+    plt.subplot(1, 3, 1)
     plt.title("Shading Estimate")
     plt.imshow(I_est, cmap="gray")
     plt.axis("off")
 
-    plt.subplot(2, 3, 3)
-    plt.title("Disparity Map (|∇z|)")
+    plt.subplot(1, 3, 2)
+    plt.title("Disparity Map")
     plt.imshow(disparity, cmap="plasma")
     plt.colorbar(label="Disparity", shrink=0.7)
     plt.axis("off")
 
-    plt.subplot(2, 3, 4)
-    plt.title("Elevation Map")
-    plt.imshow(elevation, cmap="terrain")
-    plt.colorbar(label="Elevation", shrink=0.7)
-    plt.axis("off")
-
-    ax = plt.subplot(2, 3, (5,6), projection='3d')
+    ax = plt.subplot(1, 3, 3, projection='3d')
     X, Y = np.meshgrid(np.arange(elevation.shape[1]), np.arange(elevation.shape[0]))
     ax.plot_surface(X, Y, elevation, cmap='terrain', linewidth=0, antialiased=False)
-    ax.set_title("3D Surface")
+    ax.set_title("3D DEM Surface")
     ax.set_axis_off()
 
     plt.tight_layout()
     plt.savefig(out_path, bbox_inches='tight')
     plt.close()
-    return elevation  # Return elevation for comparison
+    return elevation
 
 def dummy_compare_dem(elevation):
-    # Dummy: create a fake reference DEM with small random noise
     np.random.seed(42)
     reference_dem = elevation + np.random.normal(0, 0.05, elevation.shape)
-    # Calculate RMSE
     rmse = np.sqrt(np.mean((elevation - reference_dem) ** 2))
     return rmse
 
@@ -92,16 +83,18 @@ def index():
     plot_url = None
     rmse = None
     if request.method == 'POST':
-        file = request.files['file']
-        if file and file.filename:
+        use_default = request.form.get('use_default')
+        file = request.files.get('file')
+        if use_default == "1" or not (file and file.filename):
+            img_path = os.path.join('static', 'default_lunar.jpg')
+        else:
             filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-            out_path = os.path.join('static', 'plot.png')
-            elevation = process_and_plot(filepath, out_path)
-            # Call dummy DEM comparison
-            rmse = dummy_compare_dem(elevation)
-            plot_url = url_for('static', filename='plot.png')
+            img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(img_path)
+        out_path = os.path.join('static', 'plot.png')
+        elevation = process_and_plot(img_path, out_path)
+        rmse = dummy_compare_dem(elevation)
+        plot_url = url_for('static', filename='plot.png')
     return render_template('index.html', plot_url=plot_url, rmse=rmse)
 
 if __name__ == '__main__':
